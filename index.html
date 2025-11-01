@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: rgb(0, 140, 255);
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+        .logo {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto 1rem;
+        }
+        #result {
+            margin-top: 1.5rem;
+            min-height: 4rem;
+            text-align: center;
+        }
+
+        /* ✅ Clean white layout, green Verified! */
+        .success {
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 1.5rem;
+            color: #000000;
+            text-align: left;
+        }
+        .success h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #10b981; /* ✅ Green Verified! */
+        }
+        .success table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            color: #000000;
+        }
+        .success table td {
+            padding: 0.75rem 0.5rem;
+            vertical-align: top;
+        }
+        .success table tr:not(:last-child) td {
+            border-bottom: 1px solid #e5e5e5; /* subtle divider */
+        }
+        .success table td:first-child {
+            width: 120px;
+            font-weight: bold;
+            text-align: left;
+        }
+        .success table td:last-child {
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 6px;
+            padding: 1rem;
+            color: #991b1b;
+        }
+        .loading {
+            color: #3b82f6;
+        }
+        .info {
+            background: #dbeafe;
+            border: 1px solid #3b82f6;
+            border-radius: 6px;
+            padding: 1rem;
+            color: #1e40af;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+        .example-link {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="p-4 pl-8">
+    <div class="card">
+        <div class="text-center mb-6">
+            <img src="https://www.ceotech.in/logoicon.png" alt="Company Logo" class="logo">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Certificate Verifier</h2>
+            <p class="text-gray-600">Verify via URL parameter</p>
+        </div>
+
+        <div id="result">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+
+        <div id="info" class="info hidden">
+            <i class="fas fa-info-circle mr-2"></i>
+            Access directly via URL: <code>?ID=YOUR_CERT_ID</code> (e.g., <a href="?ID=TECH25MP01" class="example-link" target="_blank">?ID=TECH25MP01</a>)
+        </div>
+    </div>
+
+    <script>
+        let isLoading = false;
+        async function checkCertificate(certId) {
+            if (isLoading || !certId) return;
+            const resultDiv = document.getElementById('result');
+            const infoDiv = document.getElementById('info');
+            isLoading = true;
+            resultDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Verifying...</div>';
+
+            const url = `https://script.google.com/macros/s/AKfycbyADnbiUdLZ0fC2yKfOuhv9FbM5nmP-aKDgOCQP29c9gUUmvQptNIEJ7aryIV_o141B/exec?action=CertificateCheck&ID=${encodeURIComponent(certId)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.error) {
+                    resultDiv.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle mr-2"></i>${data.error}</div>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3><i class="fas fa-check-circle mr-2"></i>Verified!</h3>
+                            <table>
+                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td>${data.Name}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Duration:</strong></td>
+                                    <td>${data.DurationDate}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td><span class="font-bold">${data.Status}</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Domain:</strong></td>
+                                    <td>${data.Domain}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error"><i class="fas fa-exclamation-triangle mr-2"></i>Connection error. Please try again.</div>';
+            } finally {
+                isLoading = false;
+                if (!certId) {
+                    infoDiv.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Event listeners
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const certId = urlParams.get('ID');
+            if (certId) {
+                checkCertificate(certId);
+            } else {
+                document.getElementById('result').innerHTML = '<p class="text-gray-600">No certificate ID provided.</p>';
+                document.getElementById('info').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
