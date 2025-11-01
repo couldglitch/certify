@@ -8,14 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background: rgb(0, 140, 255);
+            /* 🌈 Beautiful gradient background */
+            background: linear-gradient(135deg, #007bff, #00c6ff);
             min-height: 100vh;
             font-family: Arial, sans-serif;
         }
         .card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             padding: 2rem;
             max-width: 600px;
             margin: 2rem auto;
@@ -32,7 +33,6 @@
             text-align: center;
         }
 
-        /* ✅ Clean white layout, green Verified! */
         .success {
             background: #ffffff;
             border-radius: 6px;
@@ -56,7 +56,7 @@
             vertical-align: top;
         }
         .success table tr:not(:last-child) td {
-            border-bottom: 1px solid #e5e5e5; /* subtle divider */
+            border-bottom: 1px solid #e5e5e5;
         }
         .success table td:first-child {
             width: 120px;
@@ -132,22 +132,10 @@
                         <div class="success">
                             <h3><i class="fas fa-check-circle mr-2"></i>Verified!</h3>
                             <table>
-                                <tr>
-                                    <td><strong>Name:</strong></td>
-                                    <td>${data.Name}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Duration:</strong></td>
-                                    <td>${data.DurationDate}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Status:</strong></td>
-                                    <td><span class="font-bold">${data.Status}</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Domain:</strong></td>
-                                    <td>${data.Domain}</td>
-                                </tr>
+                                <tr><td>Name:</td><td>${data.Name}</td></tr>
+                                <tr><td>Duration:</td><td>${data.DurationDate}</td></tr>
+                                <tr><td>Status:</td><td><span class="font-bold">${data.Status}</span></td></tr>
+                                <tr><td>Domain:</td><td>${data.Domain}</td></tr>
                             </table>
                         </div>
                     `;
@@ -162,7 +150,6 @@
             }
         }
 
-        // Event listeners
         window.addEventListener('load', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const certId = urlParams.get('ID');
