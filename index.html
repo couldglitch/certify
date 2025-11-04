@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Checker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Embedded CSS from Previous Theme */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #333;
+            background: #f4f6f9;
+            min-height: 100vh;
+            padding: 2rem 5%;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            padding: 4rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            color: #000000;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: #00d4ff;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        #manual-form {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        #cert-input {
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        #cert-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .verify-btn {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .verify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            min-height: 4rem;
+        }
+
+        .success {
+            background: #f8f9fa;
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 2rem;
+            color: #333;
+            text-align: left;
+        }
+
+        .success h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #1e3c72;
+            font-size: 1.8rem;
+        }
+
+        .success table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.1);
+        }
+
+        .success table td {
+            padding: 1rem;
+            vertical-align: top;
+        }
+
+        .success table tr:not(:last-child) td {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .success table td:first-child {
+            width: 120px;
+            font-weight: bold;
+            text-align: left;
+            color: #1e3c72;
+        }
+
+        .success table td:last-child {
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 1.5rem;
+            color: #991b1b;
+            text-align: center;
+        }
+
+        .loading {
+            color: #00d4ff;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .info {
+            background: #e3f2fd;
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 1.5rem;
+            color: #1e3c72;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .example-link {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .example-link:hover {
+            color: #1e3c72;
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="./logoicon.png" alt="CEO TECH Logo" class="logo">
+            <h2>Certificate Verifier</h2>
+            <p>Enter Certificate ID to verify</p>
+        </div>
+
+        <form id="manual-form">
+            <input type="text" id="cert-input" placeholder="Enter Certificate ID (e.g., TECH25EX01)" required>
+            <button type="button" class="verify-btn" onclick="verifyManual()">Verify Certificate</button>
+        </form>
+
+        <div id="result">
+            <p style="color: #666;">Enter a Certificate ID above to verify.</p>
+        </div>
+
+        <div id="info" class="info" style="display: none;">
+            <i class="fas fa-info-circle" style="color: #00d4ff; margin-right: 0.5rem;"></i>
+            Or access directly via URL: <code>?ID=YOUR_CERT_ID</code> (e.g., <a href="?ID=TECH25EX01" class="example-link" target="_blank">?ID=TECH25MP01</a>)
+        </div>
+    </div>
+
+    <script>
+        let isLoading = false;
+        async function checkCertificate(certId) {
+            if (isLoading || !certId) return;
+            const resultDiv = document.getElementById('result');
+            const infoDiv = document.getElementById('info');
+            isLoading = true;
+            resultDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Verifying...</div>';
+            infoDiv.style.display = 'none';
+
+            const url = `https://script.google.com/macros/s/AKfycbyADnbiUdLZ0fC2yKfOuhv9FbM5nmP-aKDgOCQP29c9gUUmvQptNIEJ7aryIV_o141B/exec?action=CertificateCheck&ID=${encodeURIComponent(certId)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.error) {
+                    resultDiv.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle" style="color: #ff6b6b; margin-right: 0.5rem;"></i>${data.error}</div>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3><i class="fas fa-check-circle" style="color: #00d4ff; margin-right: 0.5rem;"></i>Verified!</h3>
+                            <table>
+                                <tr><td>Name:</td><td>${data.Name}</td></tr>
+                                <tr><td>Duration:</td><td>${data.DurationDate}</td></tr>
+                                <tr><td>Status:</td><td><span style="color: #00d4ff; font-weight: bold;">${data.Status}</span></td></tr>
+                                <tr><td>Domain:</td><td>${data.Domain}</td></tr>
+                            </table>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error"><i class="fas fa-exclamation-triangle" style="color: #ff6b6b; margin-right: 0.5rem;"></i>Connection error. Please try again.</div>';
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function verifyManual() {
+            const certId = document.getElementById('cert-input').value.trim();
+            if (!certId) {
+                alert('Please enter a Certificate ID.');
+                return;
+            }
+            checkCertificate(certId);
+        }
+
+        // Allow Enter key to trigger verify
+        document.getElementById('cert-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyManual();
+            }
+        });
+
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const certId = urlParams.get('ID');
+            if (certId) {
+                document.getElementById('cert-input').value = certId;
+                checkCertificate(certId);
+            } else {
+                document.getElementById('info').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
